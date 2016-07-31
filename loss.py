@@ -31,7 +31,8 @@ def loss(logits, labels, num_classes, head=None):
         logits = tf.reshape(logits, (-1, num_classes))
         epsilon = tf.constant(value=1e-4)
         logits = logits + epsilon
-        labels = tf.to_float(tf.reshape(labels, (-1, num_classes)))
+        #labels = tf.to_float(tf.reshape(labels, (-1, num_classes)))
+	labels = tf.reshape(labels, (-1, num_classes))
 
         softmax = tf.nn.softmax(logits)
 
