@@ -10,23 +10,23 @@ num_classes = 20
 
 training_epochs = 1000
 batch_size      = 1
-display_step    = 100
-ntrain = 800
+display_step    = 1
+ntrain = 600
 #global_step     = 
-
+img_width = 224
 images_data = np.load('synth_train_images.npy',mmap_mode='r')
 labels_data = np.load('synth_train_labels.npy',mmap_mode='r')
 
 print(images_data.shape)
 
-images = tf.placeholder(tf.float32, shape=(batch_size, 224, 224, 3))
-labels = tf.placeholder(tf.float32, shape=(batch_size, 224, 224, 20))
+images = tf.placeholder(tf.float32, shape=(batch_size, img_width, img_width, 3))
+labels = tf.placeholder(tf.float32, shape=(batch_size, img_width, img_width, 20))
 
 vgg_fcn.build(images, train=True, num_classes=num_classes, random_init_fc8=True)
 
 loss = loss.loss(vgg_fcn.upscore32, labels, num_classes=num_classes)
 
-
+saver = tf.train.Saver()
 
 with tf.name_scope('train'):
     tf.scalar_summary(loss.op.name, loss)
@@ -56,7 +56,8 @@ with tf.name_scope('train'):
 		print ("Epoch: %03d/%03d" % (epoch, training_epochs))
 		train_acc = sess.run(loss, feed_dict={images:batch_xs, labels:batch_ys})
 		print (" Training accuracy: %.3f" % (train_acc))
-		test_acc = sess.run(loss, feed_dict={images:batch_xs, labels:batch_ys})
+		save_path = saver.save(sess, "model.ckpt")
+		
 	
 
 print ("Optimization Finished!")        
