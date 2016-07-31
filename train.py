@@ -12,7 +12,7 @@ training_epochs = 1000
 batch_size      = 1
 display_step    = 1
 ntrain = 600
-#global_step     = 
+
 img_width = 224
 images_data = np.load('synth_train_images.npy',mmap_mode='r')
 labels_data = np.load('synth_train_labels.npy',mmap_mode='r')
@@ -33,9 +33,8 @@ with tf.name_scope('train'):
     # Create the gradient descent optimizer with the given learning rate.
     optimizer = tf.train.AdamOptimizer(1e-6)
 
-    # Use the optimizer to apply the gradients that minimize the loss
-    # (and also increment the global step counter) as a single training step.
-    train_op = optimizer.minimize(loss) # global_step=global_step)
+    
+    train_op = optimizer.minimize(loss) 
     init_op = tf.initialize_all_variables()
     with tf.Session() as sess:
 	sess.run(init_op)
@@ -48,14 +47,14 @@ with tf.name_scope('train'):
 		batch_ys = np.transpose(labels_data[:, :, :, randidx], axes=[3,2,1,0])                
 		# Fit training using batch data
 		sess.run(train_op, feed_dict={images:batch_xs, labels:batch_ys})
-		#sess.run(optm, feed_dict={x: batch_xs, y: batch_ys, keepratio:0.7})
-		# Compute average loss
+		
 	
 	    # Display logs per epoch step
 	    if epoch % display_step == 0:
 		print ("Epoch: %03d/%03d" % (epoch, training_epochs))
 		train_acc = sess.run(loss, feed_dict={images:batch_xs, labels:batch_ys})
 		print (" Training accuracy: %.3f" % (train_acc))
+		# Save checkpoint 
 		save_path = saver.save(sess, "model.ckpt")
 		
 	
