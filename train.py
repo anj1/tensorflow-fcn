@@ -11,11 +11,11 @@ num_classes = 20
 training_epochs = 1000
 batch_size      = 1
 display_step    = 1
-ntrain = 600
+ntrain = 550
 
 img_width = 224
-images_data = np.load('synth_train_images.npy',mmap_mode='r')
-labels_data = np.load('synth_train_labels.npy',mmap_mode='r')
+images_data = np.load('tsynth_train_images.npy',mmap_mode='r')
+labels_data = np.load('tsynth_train_labels.npy',mmap_mode='r')
 
 print(images_data.shape)
 
@@ -43,8 +43,8 @@ with tf.name_scope('train'):
 	    # Loop over all batches
 	    for i in range(num_batch): 
 		randidx = np.random.randint(ntrain, size=batch_size)
-		batch_xs = np.transpose(images_data[:, :, :, randidx], axes=[3,2,1,0])
-		batch_ys = np.transpose(labels_data[:, :, :, randidx], axes=[3,2,1,0])                
+		batch_xs = images_data[randidx, :, :, :]
+		batch_ys = labels_data[randidx, :, :, :]                
 		# Fit training using batch data
 		sess.run(train_op, feed_dict={images:batch_xs, labels:batch_ys})
 		
